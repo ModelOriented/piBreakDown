@@ -34,17 +34,18 @@ class piBreakDown:
             if not `None`, then it will be a fixed order of variables. It can be a numeric vector or vector 
             with names of variables
         """
-        cols_to_use = set(self._data.columns[self._data.columns != self._target_label]).intersection(set(new_observation.index))
-        target_yhat = self._model.predict_proba(new_observation.loc[cols_to_use].values.reshape(1,-1))[0]
+        
+        #not used due to "feature" cols_to_use = set(self._data.columns[self._data.columns != self._target_label]).intersection(set(new_observation.index))
+        target_yhat = self._model.predict_proba(new_observation.loc[self._data.columns != self._target_label].values.reshape(1,-1))[0]
         if classes_names is None:
             classes_names = list(range(0,len(target_yhat)))
-            
+           
         yhatpred = self._model.predict_proba(self._data.loc[:,self._data.columns != self._target_label])
         baseline_yhat = yhatpred.mean(axis = 0)
-        average_yhats = self._calculated_1d_changes(self._data.loc[:, cols_to_use], new_observation[cols_to_use], classes_names)
+        average_yhats = self._calculated_1d_changes(self._data.loc[:, self._data.columns != self._target_label], 
+                                                    new_observation.loc[self._data.columns != self._target_label], classes_names)
         diffs_1d = (average_yhats.subtract(baseline_yhat)**2).mean(axis = 1)
         feature_path = self._create_ordered_path(diffs_1d, order)
-        
         tmp = self._calculate_contributions_along_path(self._data.loc[:,self._data.columns != self._target_label],
                                                       new_observation, feature_path, keep_distributions, self._target_label,
                                                       baseline_yhat, target_yhat, classes_names)
@@ -99,8 +100,10 @@ class piBreakDown:
         variable = ['intercept'] + [x + ' = ' + y for x,y in zip(variable_name,selected_values)] + ['prediction']
         cummulative = pd.DataFrame(columns=classes_names)
         cummulative.loc['baseline_yhat',:] = baseline_yhat
+
         cummulative = cummulative.append(yhats_mean)
         cummulative.loc['target_yhat',:] = target_yhat
+        
         contribution = cummulative.diff(axis = 0)
         contribution.loc['baseline_yhat',:] = cummulative.loc['baseline_yhat',:]
         contribution.loc['target_yhat',:] = cummulative.loc['target_yhat',:]
