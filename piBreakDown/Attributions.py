@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
+from piBreakDown.piBreakDownResults import piBreakDownResults
 
-class piBreakDown:
+class Attributions:
     """
     Python version of iBreakDown package in R (https://github.com/ModelOriented/iBreakDown)
     """
@@ -76,16 +77,25 @@ class piBreakDown:
         yhats = None
         yhats_mean = pd.DataFrame(columns=classes_names, index=feature_path.index)
         selected_rows = []
-
+        yhats = {}
+        
         for i in feature_path.index:
             candidates = [i]
             if all([x in open_variables for x in candidates]):
                 current_data.loc[:,candidates] = new_observation[candidates].tolist()
                 step += 1
                 yhats_pred = self._model.predict_proba(current_data)
-                #if(keep_distributions):
-                    #TODO
-                    #distribution_for_batch
+                
+                if(keep_distributions):
+                    distribution_for_batch = pd.DataFrame()
+                    
+                    for j in range(yhats_pred.shape[1]):
+                        lab = (label + '.' + classes_names[j]) if yhats_pred.shape[1] > 1 else label
+                        distribution_for_batch['lab'] = yhats_pred[:,j]
+                        
+                    distribution_for_batch['variable_name'] = i
+                    distribution_for_batch['variable'] = str(i) + ' = ' + self._nice_pair(new_observation, candidates[0], None)
+                    yhats[i] = distribution_for_batch
                     
                 yhats_mean.loc[i,:] = yhats_pred.mean(axis = 0)
                 selected_rows.append(i)
@@ -108,14 +118,7 @@ class piBreakDown:
         contribution.loc['baseline_yhat',:] = cummulative.loc['baseline_yhat',:]
         contribution.loc['target_yhat',:] = cummulative.loc['target_yhat',:]
         
-        results = {}
-        results['variable_name'] = variable_name
-        results['variable_value'] = variable_value
-        results['variable'] = variable
-        results['cummulative'] = cummulative
-        results['contribution'] = contribution
-        
-        return results
+        return piBreakDownResults(variable_name, variable_value, variable, cummulative, contribution, yhats)
     
     def _nice_pair(self, x, ind1, ind2):
         if(ind2 is None):
