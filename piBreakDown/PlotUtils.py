@@ -53,10 +53,9 @@ class PlotUtils:
                 red_bar_y.append(y_vals[i])
 
         white_bar_vals[len(y_vals) - 1] = white_bar_vals[0]
-
         val_bars = ax.barh(x_vals, y_vals, align='center', color = 'green')
         labels = [''] * len(x_vals)
-        
+            
         labels[0] = str(round(results.contribution.loc[results_data.index[0],plot_class],3))
         for i in range(1,len(x_vals)-1):
             val = round(results.contribution.loc[results_data.index[i],plot_class],3)

@@ -104,10 +104,11 @@ class Attributions:
         selected_values = []
         for i in selected.index:
             selected_values.append(self._nice_pair(new_observation, i, None))
-            
-        variable_name = ['intercept'] + feature_path.index
-        variable_value = ['1'] + selected_values
-        variable = ['intercept'] + [x + ' = ' + y for x,y in zip(variable_name,selected_values)] + ['prediction']
+           
+        variable_name = ['intercept'] + feature_path.index.tolist() + [""]
+        variable_value = ['1'] + selected_values + ['']
+        variable = ['intercept'] + [x + ' = ' + y for x,y in zip(feature_path.index.tolist(),selected_values)] + ['prediction']
+
         cummulative = pd.DataFrame(columns=classes_names)
         cummulative.loc['baseline_yhat',:] = baseline_yhat
 
