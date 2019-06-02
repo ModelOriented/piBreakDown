@@ -24,15 +24,15 @@ from sklearn.datasets import load_iris
 ### import some dataset
 
 ```
-boston = load_iris()
-data = pd.DataFrame(boston['data'])
-target = boston['target']
+iris = load_iris()
+data = pd.DataFrame(iris['data'])
+target = iris['target']
 ```
 
 You need to set the column names to strings
 
 ```
-data.columns = list(map(str, data.columns))
+data.columns = iris.feature_names
 ```
 
 ### Fit your data
@@ -56,3 +56,7 @@ results = attr.local_attributions(data.loc[0,:], # observation to explain
 PlotUtils.plot_contribution(results, 
                                 plot_class = 0) # class to plot
 ```
+
+The results are displayed below
+
+![images/example_iris.png](images/example_iris.png)
