@@ -59,4 +59,4 @@ PlotUtils.plot_contribution(results,
 
 The results are displayed below
 
-![images/example_iris.png](images/example_iris.png)
+![images/example_iris.PNG](images/example_iris.PNG)
