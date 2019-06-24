@@ -3,8 +3,9 @@ import numpy as np
 from piBreakDown.piBreakDownResults import piBreakDownResults
 from piBreakDown.ExplainHelpers import *
 
-"""
-    Python version of iBreakDown's local_attributions, package in R (https://github.com/ModelOriented/iBreakDown)
+class Attributions:
+    """
+    Python version of iBreakDown's local_attributions package in R (https://github.com/ModelOriented/iBreakDown)
     """
     def __init__(self, model, data, target_label):
         """
@@ -102,3 +103,4 @@ from piBreakDown.ExplainHelpers import *
         contribution.loc['target_yhat',:] = cummulative.loc['target_yhat',:]
         
         return piBreakDownResults(variable_name, variable_value, variable, cummulative, contribution, yhats)
+        
