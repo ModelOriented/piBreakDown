@@ -5,6 +5,9 @@ from piBreakDown.piBreakDownResults import piBreakDownResults
 from piBreakDown.ExplainHelpers import *
 
 class Interactions:
+    """
+    Python version of iBreakDown's local_interactions, package in R (https://github.com/ModelOriented/iBreakDown)
+    """
     def __init__(self, model, data, target_label, interaction_preference = 1):
         """
         Parameters
@@ -15,13 +18,33 @@ class Interactions:
             data that was used to train model
         target_label: str
             label of target variable
+        interaction_preference: numeric
+            value which controls interactions impact during explanation, possible values are between 0.0 and 1.0, 
+            higher value means more impact, default value is 1
         """
+        if interaction_preference < 0 or interaction_preference > 1:
+            raise("interaction_preference must be between 0.0 and 1.0")
+        
         self._model = model
         self._data = data
         self._target_label = target_label
         self._interaction_preference = interaction_preference
         
     def local_interactions(self, new_observation, keep_distributions = False, classes_names = None, order = None): 
+        """
+        Method for getting attributions for selected observation
+        Parameters
+        ----------
+        new_observation: pandas.Series
+            a new observation with columns that correspond to variables used in the model
+        keep_distributions: boolean
+            if `True`, then distribution of partial predictions is stored
+        classes_names: list
+            names of the classes to be predicted, if `None` then it will be number from 0 to len(predicted values)
+        order: list
+            if not `None`, then it will be a fixed order of variables. It can be a numeric vector or vector 
+            with names of variables
+        """
         
         target_yhat = self._model.predict_proba(new_observation.loc[self._data.columns != self._target_label].values.reshape(1,-1))[0]
         
@@ -54,7 +77,6 @@ class Interactions:
         
         open_variables = data.columns
         current_data = data.copy()
-        yhats = None
         yhats_mean = pd.DataFrame(columns=classes_names, index=feature_path.index)
         selected_rows = []
         yhats = {}
@@ -69,7 +91,7 @@ class Interactions:
                 yhats_pred = self._model.predict_proba(current_data)
                 
                 if keep_distributions:
-                    return
+                    yhats[str(row['var1']) + (',' + str(row['var2']) if row['var2'] is not None else '')] = yhats_pred
                 
                 yhats_mean.loc[index,:] = yhats_pred.mean(axis = 0)
                 selected_rows.append(index)
@@ -96,4 +118,5 @@ class Interactions:
         contribution.loc['baseline_yhat',:] = cummulative.loc['baseline_yhat',:]
         contribution.loc['target_yhat',:] = cummulative.loc['target_yhat',:]
         
+        return piBreakDownResults(variable_name, variable_value, variable, cummulative, contribution, yhats)
         return piBreakDownResults(variable_name, variable_value, variable, cummulative, contribution, yhats)

@@ -3,9 +3,8 @@ import numpy as np
 from piBreakDown.piBreakDownResults import piBreakDownResults
 from piBreakDown.ExplainHelpers import *
 
-class Attributions:
-    """
-    Python version of iBreakDown package in R (https://github.com/ModelOriented/iBreakDown)
+"""
+    Python version of iBreakDown's local_attributions, package in R (https://github.com/ModelOriented/iBreakDown)
     """
     def __init__(self, model, data, target_label):
         """
@@ -24,6 +23,7 @@ class Attributions:
         
     def local_attributions(self, new_observation, keep_distributions = False, classes_names = None, order = None): 
         """
+        Method for getting attributions for selected observation
         Parameters
         ----------
         new_observation: pandas.Series
@@ -57,7 +57,6 @@ class Attributions:
         open_variables = data.columns
         current_data = data.copy()
         step = 0
-        yhats = None
         yhats_mean = pd.DataFrame(columns=classes_names, index=feature_path.index)
         selected_rows = []
         yhats = {}
