@@ -15,6 +15,7 @@ pip install .
 
 ```
 from piBreakDown.Attributions import Attributions
+from piBreakDown.Interactions import Interactions
 from piBreakDown.PlotUtils import PlotUtils
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
@@ -60,3 +61,29 @@ PlotUtils.plot_contribution(results,
 The results are displayed below
 
 ![images/example_iris.png](images/example_iris.png)
+
+### Now lets see the example of local_interactions, first lets load some dataset with interactions and fit RandomForest model
+
+```
+data_info = load_breast_cancer()
+target = data_info['target']
+data = pd.DataFrame(data_info['data'])
+data.columns = data_info.feature_names
+rf = RandomForestClassifier()
+rf.fit(data, target)
+```
+
+### Then use local_interactions method and plot the results
+
+```
+attr = Interactions(rf, data, 'Class')
+results = attr.local_interactions(data.loc[0,:], # observation to explain
+                                classes_names = [0,1]) # available classes_names
+
+
+PlotUtils.plot_contribution(results, plot_class=1, height = 10)
+```
+
+### The results are displayed below
+
+![images/example_bc.png](images/example_bc.png)
