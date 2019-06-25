@@ -7,7 +7,7 @@ class PlotUtils:
     """
     
     @staticmethod
-    def plot_contribution(results, plot_class = 1):
+    def plot_contribution(results, plot_class = 1, width = 10, height = 5):
         """
         Method for plotting contribution plot.
         
@@ -17,10 +17,15 @@ class PlotUtils:
             piBreakDownResults returned from piBreakDown methods
         plot_class: str or numeric
             Class for which the plot will be displayed
+        width: int
+            Width of the plot, default value is 10
+        height: int
+            Height of the plot, default value is 5
         """
         
         fig, ax = plt.subplots()
-        fig.set_figwidth(10)
+        fig.set_figwidth(width)
+        fig.set_figheight(height)
         
         results_data = results.cummulative.copy()
         
