@@ -3,7 +3,7 @@ python version of [iBreakDown](https://github.com/ModelOriented/iBreakDown)
 
 ## Installation
 
-Clone the repository, then open console in piBreakDown/piBreakDown directory and run
+Clone the repository, then open console in `piBreakDown/piBreakDown` directory and run
 
 ```
 pip install . 
