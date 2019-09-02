@@ -1,5 +1,5 @@
 # piBreakDown
-python version of iBreakDown
+python version of [iBreakDown](https://github.com/ModelOriented/iBreakDown)
 
 ## Installation
 
