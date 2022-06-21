@@ -9,6 +9,6 @@ setup(name='piBreakDown',
       license='GPLv3',
       packages= find_packages(),
       install_requires=[
-	'numpy==1.14.2',
+	'numpy==1.22.0',
 	'pandas==0.23.4',
 	'matplotlib==2.2.0'])
